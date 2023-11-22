@@ -11,7 +11,7 @@ namespace CapaNegocio
 {
     public class CN_Usuarios
     {
-        private CN_Usuarios objCapaDato = new CN_Usuarios();
+        private CD_Usuarios objCapaDato = new CD_Usuarios();
 
         public List<USUARIOS> Listar()
         {
