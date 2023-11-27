@@ -47,23 +47,24 @@
         var tabladata;
 
         jQuery.ajax({
-            url: '@Url.Action("ListarUsuarios","Home")',
+            url: '@Url.Action("ListarUsuarios", "Home")',
             type: "GEt",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function (data) {
                 console.log(data)
             }
-        })
+        }),
+
         tabladata = $("#tabla").DataTable({
             resposive: true,
             ordering: false,
             "ajax": {
-                 url: '@Url.Action("ListarUsuarios","Home")',
+                 url: '@Url.Action("ListarUsuarios", "Home")',
                  type: "GEt",
-                 dataType: "json",
+                 dataType: "json"
             },
-            "colums": [
+            "columns": [
                 { "data": "Nombres" },
                 { "data": "Apellidos" }
             ]

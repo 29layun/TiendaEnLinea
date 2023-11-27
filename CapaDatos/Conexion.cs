@@ -9,6 +9,9 @@ namespace CapaDatos
 {
     public class Conexion
     {
-        public static string cn = ConfigurationManager.ConnectionStrings["cadena"].ToString();
+        public static string bd = ConfigurationManager.ConnectionStrings["cadena"].ToString();
+        public static string cn = "server=DESKTOP-CI6EOTK\\SQLEXPRESS;" + bd;
+
+        
     }
 }

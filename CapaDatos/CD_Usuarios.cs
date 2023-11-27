@@ -18,8 +18,9 @@ namespace CapaDatos
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
-                    string query = "select IdUsuario, Nombres, Apellidos, Correo, Clave, Reestablecer,Activo from USUARIOS";
+                    string query ="SELECT * FROM USUARIOS";
                     SqlCommand cmd = new SqlCommand(query, oconexion);
+
                     cmd.CommandType = CommandType.Text;
 
                     oconexion.Open();
