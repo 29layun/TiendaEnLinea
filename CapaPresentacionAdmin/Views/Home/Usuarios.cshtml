@@ -16,58 +16,119 @@
     </div>
 
     <div class="card-body">
-       <div class="row">
-           <div class="col-12">
-               <button type="button" class="btn btn-success">Crear nuevo</button>
-           </div>
-       </div>
+        <div class="row">
+            <div class="col-12">
+                <button type="button" class="btn btn-success" onclick="abrirModal()">Crear nuevo</button>
+            </div>
+        </div>
 
-       <hr />
-       <table id="tabla" class="display cell-border" style="width: 100%">
-           <thead>
-               <tr>
-                   <td>Nombres</td>
-                   <td>Apellidos</td>
-                   <!--<td>Correo</td>
-    <td>Activo</td>-->
-               </tr>
-           </thead>
+        <hr />
+        <table id="tabla" class="display cell-border" style="width: 100%">
+            <thead>
+                <tr>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>Correo</th>
+                    <th>Activo</th>
+                    <th></th>
+                </tr>
+            </thead>
 
-           <tbody>
-
-           </tbody>
-       </table>
+            <tbody>
+            </tbody>
+        </table>
     </div>
 
+</div>
+
+<!-- Modal Usuarios -->
+<div class="modal fade" id="FormModalUsuarios" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label for="txtnombres" class="form-label">Nombres</label>
+                        <input type="text" class="form-control" id="txtnombres">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="txtapellidos" class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" id="txtapellidos">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="txtcorreo" class="form-label">Correo</label>
+                        <input type="email" class="form-control" id="txtcorreo" placeholder="name@example.com">
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="cboactivo" class="form-label">Activo</label>
+                        <select id="cboactivo" class="form-select">
+                            <option value="1">Si</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
+            </div>
+
+        </div>
+    </div>
 </div>
 
 
 @section scripts{
     <script>
         var tabladata;
+            tabladata = $("#tabla").DataTable({
+                resposive: true,
+                ordering: false,
+                "ajax": {
+                    url: '@Url.Action("ListarUsuarios", "Home")',
+                    type: "GEt",
+                    dataType: "json"
+                },
+                "columns": [
+                    { "data": "Nombres" },
+                    { "data": "Apellidos" },
+                    { "data": "Correo" },
+                    {
+                        "data": "Activo", "render": function (valor) {
+                            if (valor) {
+                                return '<span class="badge bg-success">Si</span>'
+                            } else {
+                                return '<span class="badge bg-danger">No</span>'
+                            }
+                        }
+                    },
+                    {
+                        "defaultContent": '<button type="button" class="btn btn-primary btn-sm btn-editar"><i class="fas fa-pen"></i></button>' +
+                            '<button type="button" class="btn btn-danger btn-sm ms-2"><i class="fas fa-trash"></i></button>',
+                        "orderable": false,
+                        "searchable": false,
+                        "width": "90px"
+                    }
+                ],
+                "language": {
+                   "url":"https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
+            });
 
-        jQuery.ajax({
-            url: '@Url.Action("ListarUsuarios", "Home")',
-            type: "GEt",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            success: function (data) {
-                console.log(data)
-            }
-        }),
+        function abrirModal() {
+            $("#FormModalUsuarios").modal("show");
+        }
 
-        tabladata = $("#tabla").DataTable({
-            resposive: true,
-            ordering: false,
-            "ajax": {
-                 url: '@Url.Action("ListarUsuarios", "Home")',
-                 type: "GEt",
-                 dataType: "json"
-            },
-            "columns": [
-                { "data": "Nombres" },
-                { "data": "Apellidos" }
-            ]
-        });
+        $("#tabla tbody").on("click", '.btn-editar', function () {
+            var filaSeleccionada = $(this).closest("tr");
+            var data = tabladata.row(filaSeleccionada).data();
+
+        }) 
     </script>
-    }
+}
