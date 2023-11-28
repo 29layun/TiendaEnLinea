@@ -162,13 +162,38 @@
 
             }
 
-            if (Usuario.IdUsuario == 0) {
-                tabladata.row.add(Usuario).draw(false);
-                
-            } else {
-                tabladata.row.add(filaSeleccionada).data(Usuario).draw(false);
-            }
-            $("#FormModalUsuarios").modal("hide");
+            jQuery.ajax({
+                url: '@Url.Action("GuardarUsuarios", "HOme")',
+                type: "Post",
+                data: JSON.stringify({ objeto: Usuario }),
+                dataType: "json",
+                contType: "application/json; charset=utf-8",
+                success: function (data) {
+                    //Usuario nuevo
+                    if (Usuario.IdUsuario == 0) {
+
+                        if (data.IdUsuario != 0) {
+                            Usuario.IdUsuario = data.resultado;
+                            tabladata.row.add(Usuario).draw(false);
+                            $("#FormModalUsuarios").modal("hide");
+                        } else {
+                            alert(data.mensaje)
+                        }
+                        
+
+                    } else {
+                        tabladata.row.add(filaSeleccionada).data(Usuario).draw(false);
+                    }
+                },
+                error: function (error) {
+                    console.log(error)
+                },
+                beforeSend: function () {
+
+                },
+
+
+            });
         }
     </script>
 }

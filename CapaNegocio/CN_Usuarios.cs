@@ -17,6 +17,64 @@ namespace CapaNegocio
         {
             return objCapaDato.Listar();
         }
+        //Registrar
+        public int Registrar(USUARIOS obj, out string Mensaje)
+        {
+            Mensaje = string.Empty;
+
+            if (string.IsNullOrEmpty(obj.Nombres) || string.IsNullOrWhiteSpace(obj.Nombres))
+            {
+                Mensaje = "El nombre del Usuario no puede ser vacio";
+            }else if (string.IsNullOrEmpty(obj.Apellidos) || string.IsNullOrWhiteSpace(obj.Apellidos))
+            {
+                Mensaje = "El apellido del Usuario no puede ser vacio";
+            }
+            else if (string.IsNullOrEmpty(obj.Correo) || string.IsNullOrWhiteSpace(obj.Correo))
+            {
+                Mensaje = "El correo del Usuario no´puede ser vacio";
+            }
+
+            if (string.IsNullOrEmpty(Mensaje))
+            {
+                string clave = "test123";
+                obj.Clave = CN_Recursos.ConvertirSha256(clave);
+                return objCapaDato.Registrar(obj, out Mensaje);
+            } else
+            {
+                return 0;
+            } 
+        }
+
+        //Editar
+        public bool Editar(USUARIOS obj, out string Mensaje)
+        {
+            Mensaje = string.Empty;
+
+            if (string.IsNullOrEmpty(obj.Nombres) || string.IsNullOrWhiteSpace(obj.Nombres))
+            {
+                Mensaje = "El nombre del Usuario no puede ser vacio";
+            }
+            else if (string.IsNullOrEmpty(obj.Apellidos) || string.IsNullOrWhiteSpace(obj.Apellidos))
+            {
+                Mensaje = "El apellido del Usuario no puede ser vacio";
+            }
+            else if (string.IsNullOrEmpty(obj.Correo) || string.IsNullOrWhiteSpace(obj.Correo))
+            {
+                Mensaje = "El correo del Usuario no´puede ser vacio";
+            }
+
+            if (string.IsNullOrEmpty(Mensaje))
+            {
+                return objCapaDato.Editar(obj, out Mensaje);
+            }
+            return false;
+
+        }
+        //Eliminar
+        public bool Eliminar(int id, out string Mensaje)
+        {
+            return objCapaDato.Eliminar(id, out Mensaje);
+        }
 
     }
 }
