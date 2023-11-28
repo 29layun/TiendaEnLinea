@@ -42,7 +42,7 @@ namespace CapaDatos
                                 );
                         }
                     }
-                    oconexion.Close();
+                    
                 }
             }
             catch
