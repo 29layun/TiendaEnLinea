@@ -49,10 +49,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body g-2">
+            <div class="modal-body">
 
                 <input id="txtid" type="hidden" value="0"/>
-                <div class="row">
+
+                <div class="row g-2">
                     <div class="col-sm-6">
                         <label for="txtnombres" class="form-label">Nombres</label>
                         <input type="text" class="form-control" id="txtnombres">
@@ -71,6 +72,13 @@
                             <option value="1">Si</option>
                             <option value="0">No</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div id="mensajeError" class="alert alert-danger" role="alert">
+                        A simple danger alert—check it out!
                     </div>
                 </div>
             </div>
@@ -131,6 +139,8 @@
             $("#txtcorreo").val("");
             $("#cboactivo").val(1);
 
+            $("#mensajeError").hide();
+
             if (json != null) {
 
                 $("#txtid").val(json.IdUsuario);
@@ -150,50 +160,67 @@
             abrirModal(data)
 
         }) 
-
         function Guardar() {
 
             var Usuario = {
+
                 IdUsuario: $("#txtid").val(),
                 Activo: $("#cboactivo").val() == 1 ? true: false,
                 Apellidos: $("#txtapellidos").val(),
                 Correo: $("#txtcorreo").val(),
                 Nombres: $("#txtnombres").val()
-
             }
 
-            jQuery.ajax({
-                url: '@Url.Action("GuardarUsuarios", "HOme")',
-                type: "Post",
-                data: JSON.stringify({ objeto: Usuario }),
+
+           jQuery.ajax({
+                url: '@Url.Action("GuardarUsuarios", "Home")',
+                type: "POST",
+                data: JSON.stringify({ objeto : Usuario}),
                 dataType: "json",
-                contType: "application/json; charset=utf-8",
-                success: function (data) {
-                    //Usuario nuevo
+                contentType: "application/json; charset=utf-8",
+               success: function (data) {
+
+                   //$(".modal-body").LoadingOverlay("hide");
+
+                    //USUARIO NUEVO
                     if (Usuario.IdUsuario == 0) {
 
-                        if (data.IdUsuario != 0) {
+                        if (data.resultado != 0) {
+
                             Usuario.IdUsuario = data.resultado;
                             tabladata.row.add(Usuario).draw(false);
                             $("#FormModalUsuarios").modal("hide");
-                        } else {
-                            alert(data.mensaje)
+
+                        }else {
+                            $("#mensajeError").text(data.mensaje);
+                            $("#mensajeError").show();
                         }
-                        
+                       
+                   }
+                    //USUARIO EDITAR
+                    else {
 
-                    } else {
-                        tabladata.row.add(filaSeleccionada).data(Usuario).draw(false);
+                        if (data.resultado) {
+
+                            tabladata.row(filaSeleccionada).data(Usuario).draw(false);
+                            filaSeleccionada = null;
+                            $("#FormModalUsuarios").modal("hide");
+                        } else {
+                            $("#mensajeError").text(data.mensaje);
+                            $("#mensajeError").show();
+                        }
                     }
+                    
                 },
-                error: function (error) {
-                    console.log(error)
-                },
-                beforeSend: function () {
+               error: function (error) {
+                   console.log(error)
+               },
+               beforeSend: function () {
 
-                },
-
-
+               }
             });
+
+
         }
     </script>
 }

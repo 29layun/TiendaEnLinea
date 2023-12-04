@@ -55,9 +55,11 @@ namespace CapaDatos
         public int Registrar(USUARIOS obj, out string Mensaje)
         {
             int idautogenerado = 0;
+
             Mensaje = string.Empty;
             try
             {
+
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
                     SqlCommand cmd = new SqlCommand("sp_RegistrarUsuario", oconexion);
@@ -85,6 +87,7 @@ namespace CapaDatos
             }
             return idautogenerado;
         }
+        
         //Metodo de Editar
         public bool Editar(USUARIOS obj, out string Mensaje)
         {
