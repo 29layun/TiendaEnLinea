@@ -36,17 +36,8 @@ namespace CapaNegocio
             {
                 Mensaje = "El correo del usuario no puede ser vacio";
             }
-
-            if (string.IsNullOrEmpty(Mensaje))
-            {
-                string clave = "test123";
-                obj.Clave = CN_Recursos.ConvertirSha256(clave);
-                return objCapaDato.Registrar(obj, out Mensaje);
-            } else
-            {
-                return 0;
-            } 
-            /*
+            //Enviar contraseña mediante correo
+            
             if (string.IsNullOrEmpty(Mensaje))
             {
 
@@ -71,16 +62,12 @@ namespace CapaNegocio
                     return 0;
                 }
 
-
             }
             else
             {
 
                 return 0;
-            }*/
-
-
-
+            }
         }
 
         //Editar
