@@ -28,6 +28,7 @@ namespace CapaPresentacionAdmin.Controllers
             return Json(new { data = oLista } , JsonRequestBehavior.AllowGet);
             
         }
+
         [HttpPost]
         public JsonResult GuardarUsuarios(USUARIOS objeto)
         {
