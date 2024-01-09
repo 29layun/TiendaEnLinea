@@ -29,9 +29,10 @@ namespace CapaPresentacionAdmin.Controllers
             return View();
         }
 
-        // ++++++++++++++++ CATEGORIAs ++++++++++++++++++++
+        // ++++++++++++++++ CATEGORIAS ++++++++++++++++++++
 
         #region CATEGORIA
+
         [HttpGet]
         public JsonResult ListarCategorias()
         {
@@ -77,5 +78,57 @@ namespace CapaPresentacionAdmin.Controllers
         }
 
         #endregion
+
+
+        // ++++++++++++++++ MARCAS ++++++++++++++++++++
+        /*
+        #region MARCAS
+
+        [HttpGet]
+        public JsonResult ListarMarcas()
+        {
+
+            List<MARCAS> oLista = new List<MARCAS>();
+            oLista = new CN_Marcas().Listar();
+            return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+        [HttpPost]
+        public JsonResult GuardarMarcas(MARCAS objeto)
+        {
+            object resultado;
+            string mensaje = string.Empty;
+
+            if (objeto.IdMarca == 0)
+            {
+
+                resultado = new CN_Marcas().Registrar(objeto, out mensaje);
+            }
+            else
+            {
+                resultado = new CN_Marcas().Editar(objeto, out mensaje);
+
+            }
+
+            return Json(new { resultado = resultado, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+        [HttpPost]
+        public JsonResult EliminarMarcas(int id)
+        {
+            bool respuesta = false;
+            string mensaje = string.Empty;
+
+            respuesta = new CN_Marcas().Eliminar(id, out mensaje);
+
+            return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+        */
     }
 }
