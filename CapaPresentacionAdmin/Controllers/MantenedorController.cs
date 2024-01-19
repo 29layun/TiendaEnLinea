@@ -81,7 +81,7 @@ namespace CapaPresentacionAdmin.Controllers
 
 
         // ++++++++++++++++ MARCAS ++++++++++++++++++++
-        /*
+
         #region MARCAS
 
         [HttpGet]
@@ -129,6 +129,6 @@ namespace CapaPresentacionAdmin.Controllers
         }
 
         #endregion
-        */
+        
     }
 }

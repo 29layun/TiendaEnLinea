@@ -101,9 +101,7 @@
                     dataType: "json"
                 },
                 "columns": [
-                    { "data": "Nombres" },
-                    { "data": "Apellidos" },
-                    { "data": "Correo" },
+                    { "data": "Descripcion" },
                     {
                         "data": "Activo", "render": function (valor) {
                             if (valor) {
@@ -129,19 +127,15 @@
         function abrirModal(json) {
 
             $("#txtid").val(0);
-            $("#txtnombres").val("");
-            $("#txtapellidos").val("");
-            $("#txtcorreo").val("");
+            $("#txtdescripcion").val("");
             $("#cboactivo").val(1);
 
             $("#mensajeError").hide();
 
             if (json != null) {
 
-                $("#txtid").val(json.IdUsuario);
-                $("#txtnombres").val(json.Nombres);
-                $("#txtapellidos").val(json.Apellidos);
-                $("#txtcorreo").val(json.Correo);
+                $("#txtid").val(json.IdMarca);
+                $("#txtdescripcion").val(json.Descripcion);
                 $("#cboactivo").val(json.Activo == true ? 1 : 0);
             }
 
@@ -158,14 +152,14 @@
 
         $("#tabla tbody").on("click", '.btn-eliminar', function () {
 
-            var usuarioseleccionado = $(this).closest("tr");
+            var marcaseleccionado = $(this).closest("tr");
 
-            var data = tabladata.row(usuarioseleccionado).data();
+            var data = tabladata.row(marcaseleccionado).data();
 
 
             swal({
                 title: "Esta Seguro?",
-                text: "¿Desea eliminar el usuario?",
+                text: "¿Desea eliminar la marca?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonClass: "btn-primary",
@@ -176,9 +170,9 @@
             function () {
 
                  jQuery.ajax({
-                    url: '@Url.Action("EliminarUsuario", "Home")',
+                    url: '@Url.Action("EliminarMarcas", "Mantenedor")',
                     type: "POST",
-                    data: JSON.stringify({ id: data.IdUsuario }),
+                    data: JSON.stringify({ id: data.IdMarca }),
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {
@@ -187,7 +181,7 @@
 
                         if (data.resultado=true) {
 
-                            tabladata.row(usuarioseleccionado).remove().draw();
+                            tabladata.row(marcaseleccionado).remove().draw();
                         } else {
 
                             swal("No se pudo eliminar", data.mensaje, "error")
@@ -198,11 +192,7 @@
                     }
                 });
 
-
-
-
             });
-
 
             console.log(data);
 
@@ -211,33 +201,31 @@
 
         function Guardar() {
 
-            var Usuario = {
+            var Marca = {
 
-                IdUsuario: $("#txtid").val(),
-                Activo: $("#cboactivo").val() == 1 ? true: false,
-                Apellidos: $("#txtapellidos").val(),
-                Correo: $("#txtcorreo").val(),
-                Nombres: $("#txtnombres").val()
+                IdMarca: $("#txtid").val(),
+                Activo: $("#cboactivo").val() == 1 ? true : false,
+                Descripcion: $("#txtdescripcion").val()
             }
 
 
            jQuery.ajax({
-                url: '@Url.Action("GuardarUsuarios", "Home")',
+                url: '@Url.Action("GuardarMarcas", "Mantenedor")',
                 type: "POST",
-                data: JSON.stringify({ objeto : Usuario}),
+                data: JSON.stringify({ objeto : Marca}),
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                success: function (data) {
 
                    $(".modal-body").LoadingOverlay("hide");
 
-                    //USUARIO NUEVO
-                    if (Usuario.IdUsuario == 0) {
+                    //Marca nueva
+                    if (Marca.IdMarca == 0) {
 
                         if (data.resultado != 0) {
 
-                            Usuario.IdUsuario = data.resultado;
-                            tabladata.row.add(Usuario).draw(false);
+                            Marca.IdMarca = data.resultado;
+                            tabladata.row.add(Marca).draw(false);
                             $("#FormModal").modal("hide");
 
                         }else {
@@ -246,12 +234,12 @@
                         }
 
                    }
-                    //USUARIO EDITAR
+                    //editar marca
                     else {
 
                         if (data.resultado) {
 
-                            tabladata.row(filaSeleccionada).data(Usuario).draw(false);
+                            tabladata.row(filaSeleccionada).data(Marca).draw(false);
                             filaSeleccionada = null;
                             $("#FormModal").modal("hide");
                         } else {
