@@ -48,7 +48,7 @@ namespace CapaDatos
             return lista;
         }
 
-        //MEtodo de registrar
+        //Metodo de registrar
         public int Registrar(CATEGORIAS obj, out string Mensaje)
         {
             int idautogenerado = 0;
@@ -132,7 +132,15 @@ namespace CapaDatos
                     cmd.Parameters.Add("Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
                     cmd.CommandType = CommandType.StoredProcedure;
+
+                    oconexion.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    resultado = Convert.ToBoolean(cmd.Parameters["Resultado"].Value);
+                    Mensaje = cmd.Parameters["Mensaje"].Value.ToString();
                 }
+
             }
             catch (Exception ex)
             {
@@ -141,5 +149,6 @@ namespace CapaDatos
             }
             return resultado;
         }
+
     }
 }

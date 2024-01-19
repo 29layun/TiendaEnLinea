@@ -44,7 +44,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Usuario</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Categoria</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
@@ -190,13 +190,7 @@
                         console.log(error)
                     }
                 });
-
-
-
-
             });
-
-
             console.log(data);
 
         })
@@ -222,7 +216,7 @@
 
                    $(".modal-body").LoadingOverlay("hide");
 
-                   //USUARIO NUEVO
+                   //NUEVA CATEGORIA
                    if (Categoria.IdCategoria == 0) {
 
                         if (data.resultado != 0) {
@@ -237,7 +231,7 @@
                         }
 
                    }
-                    //USUARIO EDITAR
+                    //EDITAR CATEGORIA
                     else {
 
                         if (data.resultado) {
