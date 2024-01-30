@@ -136,6 +136,48 @@ namespace CapaDatos
             }
             return resultado;
         }
+        //Metodo de Guardar imagen
+
+        public bool GuardarDatosImagen(PRODUCTOS obj, out string Mensaje)
+        {
+
+            bool resultado = false;
+            Mensaje = string.Empty;
+
+            try
+            {
+                using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
+                {
+
+                    string query = "update producto set RutaImagen = @rutaimagen, NombreImagen = @nombreimagen where IdProducto = @idproducto";
+
+                    SqlCommand cmd = new SqlCommand(query, oconexion);
+                    cmd.Parameters.AddWithValue("@rutaimagen", obj.RutaImagen);
+                    cmd.Parameters.AddWithValue("@nombreimagen", obj.NombreImagen);
+                    cmd.Parameters.AddWithValue("@idproducto", obj.IdProducto);
+                    cmd.CommandType = CommandType.Text;
+
+                    oconexion.Open();
+
+                    if (cmd.ExecuteNonQuery() > 0)
+                    {
+                        resultado = true;
+                    }
+                    else
+                    {
+                        Mensaje = "No se pudo actualizar imagen";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                resultado = false;
+                Mensaje = ex.Message;
+            }
+
+            return resultado;
+
+        }
         //Metodo de Eliminar
 
         public bool Eliminar(int id, out string Mensaje)
