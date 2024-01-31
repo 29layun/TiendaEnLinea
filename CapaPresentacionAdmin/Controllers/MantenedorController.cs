@@ -232,6 +232,40 @@ namespace CapaPresentacionAdmin.Controllers
             return Json(new { operacionExitosa = operacion_exitosa, idGenerado = oProducto.IdProducto, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult ImagenProducto(int id)
+        {
+
+            bool conversion;
+            PRODUCTOS oproducto = new CN_Productos().Listar().Where(p => p.IdProducto == id).FirstOrDefault();
+
+            string textoBase64 = CN_Recursos.ConvertirBase64(Path.Combine(oproducto.RutaImagen, oproducto.NombreImagen), out conversion);
+
+
+            return Json(new
+            {
+                conversion = conversion,
+                textobase64 = textoBase64,
+                extension = Path.GetExtension(oproducto.NombreImagen)
+
+            },
+             JsonRequestBehavior.AllowGet
+            );
+
+
+        }
+
+
+        [HttpPost]
+        public JsonResult EliminarProducto(int id)
+        {
+            bool respuesta = false;
+            string mensaje = string.Empty;
+
+            respuesta = new CN_Productos().Eliminar(id, out mensaje);
+
+            return Json(new { resultado = respuesta, mensaje = mensaje }, JsonRequestBehavior.AllowGet);
+        }
 
         #endregion
 
