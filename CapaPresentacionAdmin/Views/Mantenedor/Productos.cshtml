@@ -140,8 +140,20 @@
 
     @section scripts{
         <script>
+
         var tabladata;
         var filaSeleccionada;
+
+        function mostrarImagen(input){
+            if (input.files) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#img_producto').attr("src", e.target.result).width(200).heigth(197)
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
             tabladata = $("#tabla").DataTable({
                 responsive: true,
                 ordering: false,
@@ -173,6 +185,11 @@
                    "url":"https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
                 }
             });
+
+        
+
+
+
 
         function abrirModal(json) {
 
