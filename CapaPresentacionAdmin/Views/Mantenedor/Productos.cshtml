@@ -144,26 +144,43 @@
         var tabladata;
         var filaSeleccionada;
 
-        function mostrarImagen(input){
-            if (input.files) {
-                var reader = new FileReader();
 
-                reader.onload = function (e) {
-                    $('#img_producto').attr("src", e.target.result).width(200).heigth(197)
+            function mostrarImagen(input) {
+                if (input.files) {
+
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $("#img_producto").attr("src", e.target.result).width(200).height(197)
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
                 }
-                reader.readAsDataURL(input.files[0]);
+
             }
-        }
             tabladata = $("#tabla").DataTable({
                 responsive: true,
                 ordering: false,
                 "ajax": {
-                    url: '@Url.Action("ListarMarcas", "Mantenedor")',
+                    url: '@Url.Action("ListarProducto", "Mantenedor")',
                     type: "GEt",
                     dataType: "json"
                 },
                 "columns": [
+                    { "data": "Nombre" },
                     { "data": "Descripcion" },
+                    {
+                        "data": "oMarca", "render": function (data) {
+                            return data.Descripcion
+                        }
+                    },
+                    {
+                        "data": "oCategoria", "render": function (data) {
+                            return data.Descripcion
+                        }
+                    },
+                    { "data": "Precio" },
+                    { "data": "Stock" },
                     {
                         "data": "Activo", "render": function (valor) {
                             if (valor) {
@@ -186,47 +203,131 @@
                 }
             });
 
-        
+            //Funcion para visualisar el contenido en la lista desplegable de categorias
+             jQuery.ajax({
+                url: '@Url.Action("ListarMarcas", "Mantenedor")',
+                type: "GET",
+                data: null,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
 
+                    $("<option>").attr({ "value": "0","disabled":"true" }).text("Seleccionar").appendTo("#cbomarca");
+                    $.each(data.data, function (index, item) {
 
+                        $("<option>").attr({ "value": item.IdMarca }).text(item.Descripcion).appendTo("#cbomarca");
+                    })
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+             });
+
+        //Funcion para categorias
+
+        jQuery.ajax({
+            url: '@Url.Action("ListarCategorias", "Mantenedor")',
+            type: "GET",
+            data: null,
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+
+                $("<option>").attr({ "value": "0", "disabled": "true" }).text("Seleccionar").appendTo("#cbocategoria");
+                $.each(data.data, function (index, item) {
+
+                    $("<option>").attr({ "value": item.IdCategoria }).text(item.Descripcion).appendTo("#cbocategoria");
+                })
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
 
 
         function abrirModal(json) {
 
             $("#txtid").val(0);
+            $("#img_producto").removeAttr("src");
+            $("#fileProducto").val("");
+            $("#txtnombre").val("");
             $("#txtdescripcion").val("");
+            $("#cbomarca").val($("#cbomarca option:first").val());
+            $("#cbocategoria").val($("#cbocategoria option:first").val());
+            $("#txtprecio").val("");
+            $("#txtstock").val("");
             $("#cboactivo").val(1);
 
             $("#mensajeError").hide();
 
             if (json != null) {
 
-                $("#txtid").val(json.IdMarca);
+                $("#txtid").val(json.IdProducto);
+                $("#txtnombre").val(json.Nombre);
                 $("#txtdescripcion").val(json.Descripcion);
+                $("#cbomarca").val(json.oMarca.IdMarca);
+                $("#cbocategoria").val(json.oCategoria.IdCategoria);
+                $("#txtprecio").val(json.Precio);
+                $("#txtstock").val(json.Stock);
                 $("#cboactivo").val(json.Activo == true ? 1 : 0);
+
+
+
+                 jQuery.ajax({
+                    url: '@Url.Action("ImagenProducto", "Mantenedor")',
+                    type: "POST",
+                     data: JSON.stringify({ id : json.IdProducto}),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                     success: function (data) {
+
+                         $("#img_producto").LoadingOverlay("hide");
+
+                        if (data.conversion) {
+                            $("#img_producto").attr({ "src": "data:image/" + data.extension + ";base64," + data.textobase64 });
+                        }
+                    },
+                    error: function (error) {
+                        $("#img_producto").LoadingOverlay("hide");
+
+                        $("#mensajeError").show();
+                        $("#mensajeError").text("Error al mostrar imagen");
+
+                    },
+                    beforeSend: function () {
+                        $("#img_producto").LoadingOverlay("show");
+                    },
+                });
+
+
+
+
             }
 
             $("#FormModal").modal("show");
         }
 
-        $("#tabla tbody").on("click", '.btn-editar', function () {
-            filaSeleccionada = $(this).closest("tr");
-            var data = tabladata.row(filaSeleccionada).data();
 
-            abrirModal(data)
+            $("#tabla tbody").on("click", '.btn-editar', function () {
 
-        })
+                filaSeleccionada = $(this).closest("tr");
 
-        $("#tabla tbody").on("click", '.btn-eliminar', function () {
+                var data = tabladata.row(filaSeleccionada).data();
 
-            var marcaseleccionado = $(this).closest("tr");
+                abrirModal(data)
 
-            var data = tabladata.row(marcaseleccionado).data();
+            })
+
+       $("#tabla tbody").on("click", '.btn-eliminar', function () {
+
+            var productoseleccionado = $(this).closest("tr");
+
+            var data = tabladata.row(productoseleccionado).data();
 
 
             swal({
                 title: "Esta Seguro?",
-                text: "¿Desea eliminar la marca?",
+                text: "¿Desea eliminar la producto?",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonClass: "btn-primary",
@@ -237,18 +338,17 @@
             function () {
 
                  jQuery.ajax({
-                    url: '@Url.Action("EliminarMarcas", "Mantenedor")',
+                    url: '@Url.Action("EliminarProducto", "Mantenedor")',
                     type: "POST",
-                    data: JSON.stringify({ id: data.IdMarca }),
+                     data: JSON.stringify({ id: data.IdProducto }),
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {
 
 
+                        if (data.resultado) {
 
-                        if (data.resultado=true) {
-
-                            tabladata.row(marcaseleccionado).remove().draw();
+                            tabladata.row(productoseleccionado).remove().draw();
                         } else {
 
                             swal("No se pudo eliminar", data.mensaje, "error")
@@ -259,7 +359,11 @@
                     }
                 });
 
+
+
+
             });
+
 
             console.log(data);
 
@@ -268,45 +372,62 @@
 
         function Guardar() {
 
-            var Marca = {
+            var ImagenSeleccionada = $("#fileProducto")[0].files[0];
 
-                IdMarca: $("#txtid").val(),
+            var Producto = {
+                IdProducto: $("#txtid").val(),
+                Nombre: $("#txtnombre").val(),
+                Descripcion: $("#txtdescripcion").val(),
+                oMarca: {
+                    IdMarca: $("#cbomarca option:selected").val(),
+                    Descripcion: $("#cbomarca option:selected").text()
+                },
+                oCategoria: {
+                    IdCategoria: $("#cbocategoria option:selected").val(),
+                    Descripcion: $("#cbocategoria option:selected").text()
+                },
+                PrecioTexto: $("#txtprecio").val(),
+                Precio: $("#txtprecio").val(),
+                Stock: $("#txtstock").val(),
                 Activo: $("#cboactivo").val() == 1 ? true : false,
-                Descripcion: $("#txtdescripcion").val()
             }
+
+            var request = new FormData();
+            request.append("objeto", JSON.stringify(Producto))
+            request.append("archivoImagen", ImagenSeleccionada)
+
 
 
            jQuery.ajax({
-                url: '@Url.Action("GuardarMarcas", "Mantenedor")',
+                url: '@Url.Action("GuardarProducto", "Mantenedor")',
                 type: "POST",
-                data: JSON.stringify({ objeto : Marca}),
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
+               data: request,
+               processData: false,
+               contentType:false,
                success: function (data) {
 
                    $(".modal-body").LoadingOverlay("hide");
 
-                    //Marca nueva
-                    if (Marca.IdMarca == 0) {
+                    //PRODUCTO NUEVO
+                   if (Producto.IdProducto == 0) {
 
-                        if (data.resultado != 0) {
+                       if (data.idGenerado != 0) {
 
-                            Marca.IdMarca = data.resultado;
-                            tabladata.row.add(Marca).draw(false);
+                           Producto.IdProducto = data.idGenerado;
+                            tabladata.row.add(Producto).draw(false);
                             $("#FormModal").modal("hide");
 
-                        }else {
+                        } else {
                             $("#mensajeError").text(data.mensaje);
                             $("#mensajeError").show();
                         }
-
-                   }
-                    //editar marca
+                    }
+                    //PRODUCTO EDITAR
                     else {
 
-                        if (data.resultado) {
+                       if (data.operacionExitosa) {
 
-                            tabladata.row(filaSeleccionada).data(Marca).draw(false);
+                            tabladata.row(filaSeleccionada).data(Producto).draw(false);
                             filaSeleccionada = null;
                             $("#FormModal").modal("hide");
                         } else {
@@ -314,22 +435,23 @@
                             $("#mensajeError").show();
                         }
                     }
-
                 },
                error: function (error) {
+
                    $(".modal-body").LoadingOverlay("hide");
                    $("#mensajeError").text("Error Ajax");
                    $("#mensajeError").show();
-               },
-               beforeSend: function () {
-                   $(".modal-body").LoadingOverlay("show", {
-                       imageResizenFactor: 2,
-                       text: "Cargando..",
-                       size: 14
-                   })
-
-               }
+                },
+                beforeSend: function () {
+                    $(".modal-body").LoadingOverlay("show", {
+                        imageResizeFactor: 2,
+                        text: "Cargando...",
+                        size: 14
+                    })
+                }
             });
+
+
 
 
         }
