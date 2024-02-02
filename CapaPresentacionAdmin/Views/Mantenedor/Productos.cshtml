@@ -121,7 +121,6 @@
                 <div class="row mt-3">
                     <div class="col-12">
                         <div id="mensajeError" class="alert alert-danger" role="alert">
-                            A simple danger alert—check it out!
                         </div>
                     </div>
                 </div>
@@ -243,6 +242,40 @@
                 console.log(error)
             }
         });
+
+            
+
+            jQuery.validator.addMethod("preciodecimal", function (value, element) {
+                return this.optional(element) || /^\d{0,4}(\.\d{0,2})?$/i.test(value);
+            }, "El formato correcto del precio es ##.##");
+
+
+            $("#contenedor").validate({
+                rules: {
+                    nombre: {
+                        required: true
+                    },
+                    descripcion: {
+                        required: true
+                    },
+                    precio: {
+                        required: true,
+                        preciodecimal: true
+                    },
+                    stock: {
+                        required: true,
+                        number: true
+                    }
+                },
+                messages: {
+                    nombre: "- El campo nombre es obligatorio",
+                    descripcion: "- El campo descripcion es obligatorio",
+                    precio: { required: "- El campo precio es obligario", preciodecimal: "- El formato correcto del precio es ##.##" },
+                    stock: { required: "- El campo stock es obligario", preciodecimal: "- Debe ingresar solo numeros en el stock" }
+                },
+                errorElement: "div",
+                errorLabelContainer: ".alert-danger"
+            })
 
 
         function abrirModal(json) {
@@ -370,7 +403,12 @@
         })
 
 
-        function Guardar() {
+            function Guardar() {
+
+                if (!$("#contenedor").valid()) {
+                    return;
+                }
+
 
             var ImagenSeleccionada = $("#fileProducto")[0].files[0];
 
