@@ -309,22 +309,21 @@
                  jQuery.ajax({
                     url: '@Url.Action("ImagenProducto", "Mantenedor")',
                     type: "POST",
-                     data: JSON.stringify({ id : json.IdProducto}),
+                    data: JSON.stringify({ id : json.IdProducto}),
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
                      success: function (data) {
-
-                         $("#img_producto").LoadingOverlay("hide");
-
+                        $("#img_producto").LoadingOverlay("hide");
                         if (data.conversion) {
                             $("#img_producto").attr({ "src": "data:image/" + data.extension + ";base64," + data.textobase64 });
                         }
                     },
-                    error: function (error) {
-                        $("#img_producto").LoadingOverlay("hide");
+                     error: function (error) {
+                         console.log(error)
+                       $("#img_producto").LoadingOverlay("hide");
 
-                        $("#mensajeError").show();
-                        $("#mensajeError").text("Error al mostrar imagen");
+                       $("#mensajeError").show();
+                       $("#mensajeError").text("Error al mostrar imagen");
 
                     },
                     beforeSend: function () {
