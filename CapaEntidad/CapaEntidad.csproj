@@ -44,7 +44,7 @@
     <Compile Include="CARRITO.cs" />
     <Compile Include="CATEGORIAS.cs" />
     <Compile Include="CLIENTES.cs" />
-    <Compile Include="Dashboard.cs" />
+    <Compile Include="DashBoard.cs" />
     <Compile Include="DETALLE_VENTAS.cs" />
     <Compile Include="ESTADOS.cs" />
     <Compile Include="LOCALIDADES.cs" />

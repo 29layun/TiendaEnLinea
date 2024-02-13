@@ -5,24 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CapaEntidad;
+
 using System.Data.SqlClient;
 using System.Data;
+using System.Globalization;
 
 namespace CapaDatos
 {
     public class CD_Reporte
     {
-        public Dashboard VerDashboard()
+        public DashBoard VerDashBoard()
         {
-            Dashboard objeto = new Dashboard();
+
+            DashBoard objeto = new DashBoard();
+
             try
             {
                 using (SqlConnection oconexion = new SqlConnection(Conexion.cn))
                 {
-                    
-                    SqlCommand cmd = new SqlCommand("sp_ReporteDashboard", oconexion);
 
-                    cmd.CommandType = CommandType.Text;
+                    SqlCommand cmd = new SqlCommand("sp_ReporteDashboard", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
                     oconexion.Open();
 
@@ -30,23 +33,30 @@ namespace CapaDatos
                     {
                         while (dr.Read())
                         {
-                            objeto = new Dashboard()
+
+                            objeto = new DashBoard()
                             {
-                                TotalCliente = Convert.ToInt32(dr["TotalCliente"]),
+                                TotalClientes = Convert.ToInt32(dr["TotalClientes"]),
                                 TotalVenta = Convert.ToInt32(dr["TotalVenta"]),
-                                TotalProducto = Convert.ToInt32(dr["TotalProducto"]),
+                                TotalProductos = Convert.ToInt32(dr["TotalProductos"]),
+
                             };
                         }
                     }
-                    oconexion.Close();
                 }
+
             }
             catch
             {
-                objeto = new Dashboard();
+                objeto = new DashBoard();
+
             }
+
+
             return objeto;
 
+
         }
+
     }
 }

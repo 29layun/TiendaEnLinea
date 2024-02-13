@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace CapaEntidad
 {
-    public class Dashboard
+    public class DashBoard
     {
-        public int TotalCliente { get; set; }
+
+        public int TotalClientes { get; set; }
         public int TotalVenta { get; set; }
-        public int TotalProducto { get; set; }
+        public int TotalProductos { get; set; }
     }
 }
