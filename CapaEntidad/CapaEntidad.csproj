@@ -52,6 +52,7 @@
     <Compile Include="MUNICIPIOS.cs" />
     <Compile Include="PRODUCTOS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reporte.cs" />
     <Compile Include="USUARIOS.cs" />
     <Compile Include="VENTAS.cs" />
   </ItemGroup>

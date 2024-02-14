@@ -43,6 +43,7 @@ namespace CapaDatos
                             };
                         }
                     }
+                    oconexion.Close();
                 }
 
             }
