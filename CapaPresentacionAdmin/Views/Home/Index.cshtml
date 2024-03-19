@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "DashBoard";
 }
 
 <h1 class="mt-4">Dashboard</h1>
@@ -126,8 +126,12 @@
 @section scripts{
     <script>
 
-        $("#txtfechainicio").datepicker({dateFormat : 'dd/mm/yy'}).datepicker('setDate',new Date())
-        $("#txtfechafin").datepicker({dateFormat : 'dd/mm/yy' }).datepicker('setDate', new Date())
+        var tabladata;
+
+        $(document).ready(function () {
+
+            $("#txtfechainicio").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker('setDate', new Date())
+            $("#txtfechafin").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker('setDate', new Date())
 
             jQuery.ajax({
                 url: '@Url.Action("VistaDashBoard", "Home")',
@@ -143,6 +147,51 @@
                     $("#totalproductos").text(objeto.TotalProductos)
 
                 }
-             });
+            });
+
+
+            var Url = '@Url.Action("ListaReporte", "Home")' +
+                "?fechainicio=" + $("#txtfechainicio").val() +
+                "&fechafin=" + $("#txtfechafin").val() +
+                "&idtransaccion=" + $("#txtidtransaccion").val()
+
+            tabladata = $("#tabla").DataTable({
+                responsive: true,
+                ordering: false,
+                "ajax": {
+                    url: Url,
+                    type: "GET",
+                    dataType: "json"
+                },
+                "columns": [
+                    { "data": "FechaVenta" },
+                    { "data": "Cliente" },
+                    { "data": "Producto" },
+                    { "data": "Precio" },
+                    { "data": "Cantidad" },
+                    { "data": "Total" },
+                    { "data": "IdTransaccion" }
+                ],
+                "language": {
+                    "url": "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"
+                }
+
+            });
+
+        })
+
+         $("#btnbuscar").on("click", function () {
+
+             var nueva_url = '@Url.Action("ListaReporte", "Home")' +
+            "?fechainicio=" + $("#txtfechainicio").val() +
+            "&fechafin=" + $("#txtfechafin").val() +
+            "&idtransaccion=" + $("#txtidtransaccion").val()
+
+
+            tabladata.ajax.url(nueva_url).load();
+
+        })
+        
+
     </script>
     }

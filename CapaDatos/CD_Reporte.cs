@@ -14,7 +14,7 @@ namespace CapaDatos
 {
     public class CD_Reporte
     {
-        public List<Reporte> Ventas(string Fechainicio, string Fechafin, string Idtransaccion)
+        public List<Reporte> Ventas(string fechainicio, string fechafin, string idtransaccion)
         {
             List<Reporte> lista = new List<Reporte>();
             try
@@ -23,10 +23,10 @@ namespace CapaDatos
                 {
                     
                     SqlCommand cmd = new SqlCommand("sp_ReporteVentas", oconexion);
-                    cmd.Parameters.AddWithValue("Fechainicio", Fechainicio);
-                    cmd.Parameters.AddWithValue("Fechafin", Fechafin);
-                    cmd.Parameters.AddWithValue("Idtransaccion", Idtransaccion);
-                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("fechainicio", fechainicio);
+                    cmd.Parameters.AddWithValue("fechafin", fechafin);
+                    cmd.Parameters.AddWithValue("idtransaccion", idtransaccion);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
                     oconexion.Open();
 
